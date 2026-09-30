@@ -39,7 +39,7 @@ export function login () {
     
     //the fix for this: 
    //{"email": "' OR 1=1#", "password": "anything"}
-    
+    //now it does not just set sql query
     models.sequelize.query(
   'SELECT * FROM Users WHERE email = :email AND password = :password AND deletedAt IS NULL',
   {
