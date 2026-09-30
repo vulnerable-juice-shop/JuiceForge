@@ -16,7 +16,7 @@ jobs:
 
       - name: Run Semgrep Security Scan
         run: |
-          docker run --rm -v "$PWD:/src" semgrep/semgrep semgrep scan \
+          docker run --rm -v "${{ github.workspace }}:/src" semgrep/semgrep semgrep scan \
             --config /src/.semgrep/rules.yml \
             --config p/javascript \
             --config p/nodejs \
