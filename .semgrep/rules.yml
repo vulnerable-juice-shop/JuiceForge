@@ -1,0 +1,9 @@
+rules:
+- id: sql-built-with-template-string
+  languages: [generic]
+  severity: ERROR
+  message: SQL query is built from a template string. Use replacements or bind parameters instead.
+  paths:
+    include:
+    - routes/
+  pattern-regex: 'sequelize\.query\(\s*`[^`]*\$\{'
