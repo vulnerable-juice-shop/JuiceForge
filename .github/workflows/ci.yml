@@ -1,0 +1,53 @@
+name: Security & CI Pipeline
+
+on:
+  push:
+    branches: [ "main", "fixes", "my-docker-fixes" ]
+  pull_request:
+    branches: [ "main", "fixes", "my-docker-fixes" ]
+
+jobs:
+  sast-scan:
+    name: SAST Scan (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep Security Scan
+        run: |
+          docker run --rm -v "${{ github.workspace }}:/src" semgrep/semgrep semgrep scan \
+            --config /src/.semgrep/rules.yml \
+            --config p/javascript \
+            --config p/nodejs \
+            --metrics=off \
+            /src/routes /src/lib /src/server.ts
+
+  container-build-and-scan:
+    name: Container Build & Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Application Image
+        run: |
+          docker build -t juiceshop-fixed:ci .
+
+      - name: Run Trivy Vulnerability Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'juiceshop-fixed:ci'
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+
+      - name: Verify Docker Compose Configuration
+        env:
+          COOKIE_SECRET: ci_test_secret_for_docker_compose_validation
+        run: |
+          docker compose config
