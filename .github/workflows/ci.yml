@@ -20,7 +20,7 @@ jobs:
           config: >-
             p/javascript
             p/nodejs
-            .semgrep/rules.yml
+            .semgrep
 
   container-build-and-scan:
     name: Container Build & Vulnerability Scan
