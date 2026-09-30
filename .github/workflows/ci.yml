@@ -46,5 +46,7 @@ jobs:
           vuln-type: 'os,library'
 
       - name: Verify Docker Compose Configuration
+        env:
+          COOKIE_SECRET: ci_test_secret_for_docker_compose_validation
         run: |
           docker compose config
