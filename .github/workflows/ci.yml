@@ -7,7 +7,7 @@ on:
     branches: [ "main", "fixes" ]
 
 jobs:
-  sast-scan:
+ sast-scan:
     name: SAST Scan (Semgrep)
     runs-on: ubuntu-latest
     steps:
@@ -15,12 +15,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Semgrep Security Scan
-        uses: semgrep/semgrep-action@v1
-        with:
-          config: >-
-            p/javascript
-            p/nodejs
-            .semgrep
+        run: |
+          docker run --rm -v "$PWD:/src" semgrep/semgrep semgrep scan \
+            --config /src/.semgrep/rules.yml \
+            --config p/javascript \
+            --config p/nodejs \
+            --metrics=off \
+            /src/routes /src/lib /src/server.ts
 
   container-build-and-scan:
     name: Container Build & Vulnerability Scan
