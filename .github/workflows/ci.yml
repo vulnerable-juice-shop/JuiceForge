@@ -2,12 +2,12 @@ name: Security & CI Pipeline
 
 on:
   push:
-    branches: [ "main", "fixes" ]
+    branches: [ "main", "fixes", "my-docker-fixes" ]
   pull_request:
-    branches: [ "main", "fixes" ]
+    branches: [ "main", "fixes", "my-docker-fixes" ]
 
 jobs:
- sast-scan:
+  sast-scan:
     name: SAST Scan (Semgrep)
     runs-on: ubuntu-latest
     steps:
