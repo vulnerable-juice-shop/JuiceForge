@@ -305,7 +305,11 @@ function configureApp (app: ReturnType<typeof express>, seq: typeof sequelize) {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
   app.use(express.static(path.resolve('frontend/dist/frontend')))
-  app.use(cookieParser('kekse'))
+  if (!process.env.COOKIE_SECRET) {
+  throw new Error('COOKIE_SECRET environment variable is not set')
+}
+
+app.use(cookieParser(process.env.COOKIE_SECRET))
   // vuln-code-snippet end directoryListingChallenge accessLogDisclosureChallenge
 
   /* Serve vendor dependencies locally instead of from CDN */
